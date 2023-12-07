@@ -8,7 +8,7 @@ datasource db {
 }
 
 model nguoi_dung {
-  nguoi_dung_id Int         @id
+  nguoi_dung_id Int         @id @default(autoincrement())
   email         String?
   mat_khau      String?
   ho_ten        String?
@@ -20,7 +20,7 @@ model nguoi_dung {
 }
 
 model hinh_anh {
-  hinh_id       Int         @id
+  hinh_id       Int         @id @default(autoincrement())
   ten_hinh      String?
   duong_dan     String?
   mo_ta         String?
@@ -41,7 +41,7 @@ model luu_anh {
 }
 
 model binh_luan {
-  binh_luan_id   Int        @id
+  binh_luan_id   Int        @id @default(autoincrement())
   ngay_binh_luan DateTime?
   noi_dung       String?
   nguoi_dung_id  Int

@@ -17,12 +17,12 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('/login')
-  login(@Body() body: loginDTO): string {
-    return 'login';
+  login(@Body() body: loginDTO): any {
+    return this.authService.login(body);
   }
 
   @Post('/sign-up')
-  register(@Body() body: registerDTO): string {
-    return 'login abc';
+  register(@Body() body: registerDTO): any {
+    return this.authService.register(body);
   }
 }
