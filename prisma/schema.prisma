@@ -1,0 +1,51 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model nguoi_dung {
+  nguoi_dung_id Int         @id
+  email         String?
+  mat_khau      String?
+  ho_ten        String?
+  tuoi          Int?
+  anh_dai_dien  String?
+  hinh_anh      hinh_anh[]
+  luu_anh       luu_anh[]
+  binh_luan     binh_luan[]
+}
+
+model hinh_anh {
+  hinh_id       Int         @id
+  ten_hinh      String?
+  duong_dan     String?
+  mo_ta         String?
+  nguoi_dung_id Int
+  nguoi_dung    nguoi_dung  @relation(fields: [nguoi_dung_id], references: [nguoi_dung_id])
+  binh_luan     binh_luan[]
+  luu_anh       luu_anh[]
+}
+
+model luu_anh {
+  ngay_luu      DateTime?
+  nguoi_dung_id Int
+  hinh_id       Int
+  nguoi_dung    nguoi_dung @relation(fields: [nguoi_dung_id], references: [nguoi_dung_id])
+  hinh          hinh_anh   @relation(fields: [hinh_id], references: [hinh_id])
+
+  @@id([nguoi_dung_id, hinh_id])
+}
+
+model binh_luan {
+  binh_luan_id   Int        @id
+  ngay_binh_luan DateTime?
+  noi_dung       String?
+  nguoi_dung_id  Int
+  nguoi_dung     nguoi_dung @relation(fields: [nguoi_dung_id], references: [nguoi_dung_id])
+  hinh_id        Int
+  hinh           hinh_anh   @relation(fields: [hinh_id], references: [hinh_id])
+}
