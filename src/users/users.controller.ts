@@ -15,6 +15,9 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { ConfigService } from '@nestjs/config/dist';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
+import { ApiTags } from '@nestjs/swagger';
+
+@ApiTags('Auth')
 @Controller('users')
 export class UsersController {
   constructor(
