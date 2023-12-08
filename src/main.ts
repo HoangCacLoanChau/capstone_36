@@ -10,6 +10,7 @@ async function bootstrap() {
 
   const config = new DocumentBuilder()
     .setTitle('Pirest Clone')
+    .addBearerAuth()
     .setDescription('collection of image')
     .setVersion('1.0')
     .build();

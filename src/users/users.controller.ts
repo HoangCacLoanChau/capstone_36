@@ -10,14 +10,12 @@ import {
   UploadedFiles,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
 import { ConfigService } from '@nestjs/config/dist';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { ApiTags } from '@nestjs/swagger';
 
-@ApiTags('Auth')
+@ApiTags('Nguoi dung')
 @Controller('users')
 export class UsersController {
   constructor(

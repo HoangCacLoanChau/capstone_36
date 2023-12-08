@@ -4,6 +4,8 @@ import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { BinhLuanModule } from './binh-luan/binh-luan.module';
+import { HinhAnhModule } from './hinh-anh/hinh-anh.module';
 
 // muốn dùng thư viện nào, module custom thì
 // import module đó vào app module (tổng)
@@ -14,6 +16,8 @@ import { AppService } from './app.service';
     }),
     UsersModule,
     AuthModule,
+    BinhLuanModule,
+    HinhAnhModule,
   ],
   controllers: [AppController],
   providers: [AppService],
