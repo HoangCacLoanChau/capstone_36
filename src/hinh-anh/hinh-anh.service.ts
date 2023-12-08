@@ -11,7 +11,7 @@ export class HinhAnhService {
     return data;
   }
 
-  async findOne(id: number): Promise<any> {
+  async findOne(id: number): Promise<any | null> {
     const data = await this.prisma.hinh_anh.findUnique({
       where: {
         hinh_id: id,
@@ -19,11 +19,18 @@ export class HinhAnhService {
     });
     return data;
   }
-  async findByName(substring: string): Promise<any> {
+  async findByName(substring: string): Promise<any | null> {
     const data = await this.prisma.hinh_anh.findMany({
       where: { ten_hinh: { contains: substring } },
     });
     return data;
+  }
+
+  async findHinhAnhAndNguoiDungById(hinhAnhId: number): Promise<any | null> {
+    return this.prisma.hinh_anh.findUnique({
+      where: { hinh_id: hinhAnhId },
+      include: { nguoi_dung: true },
+    });
   }
 
   remove(id: number) {

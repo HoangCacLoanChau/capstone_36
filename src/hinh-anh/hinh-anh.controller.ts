@@ -1,13 +1,10 @@
 import {
   Controller,
   Get,
-  Post,
-  Body,
-  Patch,
   Param,
   Delete,
-  NotFoundException,
   Query,
+  NotFoundException,
 } from '@nestjs/common';
 import { HinhAnhService } from './hinh-anh.service';
 import { ApiQuery, ApiTags } from '@nestjs/swagger';
@@ -16,9 +13,18 @@ import { ApiQuery, ApiTags } from '@nestjs/swagger';
 @Controller('hinh-anh')
 export class HinhAnhController {
   constructor(private readonly hinhAnhService: HinhAnhService) {}
+
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.hinhAnhService.findOne(+id);
+  async findHinhAnhAndNguoiDungById(@Param('id') hinhAnhId: number) {
+    const result = await this.hinhAnhService.findHinhAnhAndNguoiDungById(
+      Number(hinhAnhId),
+    );
+
+    if (!result) {
+      throw new NotFoundException(`Hinh Anh with ID ${hinhAnhId} not found`);
+    }
+
+    return result;
   }
 
   @ApiQuery({
