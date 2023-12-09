@@ -5,12 +5,17 @@ import { PrismaClient } from '@prisma/client';
 export class UsersService {
   prisma = new PrismaClient();
 
-  async findAll() {
+  async findAll(): Promise<any> {
     const data = await this.prisma.nguoi_dung.findMany();
     return data;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async findOne(id: number): Promise<any> {
+    const data = await this.prisma.nguoi_dung.findUnique({
+      where: {
+        nguoi_dung_id: id,
+      },
+    });
+    return data;
   }
 }

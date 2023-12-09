@@ -5,9 +5,12 @@ import {
   Delete,
   Query,
   NotFoundException,
+  Req,
+  UseGuards,
 } from '@nestjs/common';
 import { HinhAnhService } from './hinh-anh.service';
-import { ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { AuthGuard } from '@nestjs/passport';
 
 @ApiTags('Hinh Anh')
 @Controller('hinh-anh')
@@ -43,8 +46,10 @@ export class HinhAnhController {
     }
   }
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('Jwt'))
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.hinhAnhService.remove(+id);
+  remove(@Req() req, @Param('id') id: number) {
+    return this.hinhAnhService.remove(Number(id), req.user.nguoi_dung_id);
   }
 }
