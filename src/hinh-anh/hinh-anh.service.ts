@@ -30,10 +30,11 @@ export class HinhAnhService {
   }
 
   async findHinhAnhAndNguoiDungById(hinhAnhId: number): Promise<any | null> {
-    return this.prisma.hinh_anh.findUnique({
+    const data = await this.prisma.hinh_anh.findUnique({
       where: { hinh_id: hinhAnhId },
       include: { nguoi_dung: true },
     });
+    return data;
   }
 
   async remove(hinhId: number, nguoi_dung_id: number): Promise<any> {
@@ -66,5 +67,31 @@ export class HinhAnhService {
         where: { hinh_id: hinhId },
       });
     }
+  }
+
+  async isHinhAnhSavedByHinhId(
+    hinhAnhId: number,
+    nguoiDungId: number,
+  ): Promise<boolean> {
+    const luuAnh = await this.prisma.luu_anh.findFirst({
+      where: { hinh_id: hinhAnhId, nguoi_dung_id: nguoiDungId },
+    });
+    //convert to boolean
+    return !!luuAnh;
+  }
+
+  async getHinhAnhByUserId(nguoiDungId: number): Promise<any> {
+    const hinhAnhList = await this.prisma.hinh_anh.findMany({
+      where: { nguoi_dung_id: nguoiDungId },
+    });
+
+    return hinhAnhList;
+  }
+
+  async getHinhAnhDaLuuByUser(nguoiDungId: number): Promise<any> {
+    const hinhanhList = await this.prisma.luu_anh.findMany({
+      where: { nguoi_dung_id: nguoiDungId },
+    });
+    return hinhanhList;
   }
 }

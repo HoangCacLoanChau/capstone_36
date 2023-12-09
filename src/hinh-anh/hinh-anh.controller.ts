@@ -17,17 +17,68 @@ import { AuthGuard } from '@nestjs/passport';
 export class HinhAnhController {
   constructor(private readonly hinhAnhService: HinhAnhService) {}
 
-  @Get(':id')
-  async findHinhAnhAndNguoiDungById(@Param('id') hinhAnhId: number) {
-    const result = await this.hinhAnhService.findHinhAnhAndNguoiDungById(
-      Number(hinhAnhId),
-    );
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('Jwt'))
+  @Get(':id/is-saved/')
+  async isHinhAnhSavedByHinhId(
+    @Param('id') hinhAnhId: string,
+    @Req() req,
+  ): Promise<{ isSaved: boolean }> {
+    const id = Number(hinhAnhId);
+    const nguoiDungId = Number(req.user.nguoi_dung_id);
 
-    if (!result) {
-      throw new NotFoundException(`Hinh Anh with ID ${hinhAnhId} not found`);
+    if (isNaN(id) || isNaN(nguoiDungId)) {
+      throw new NotFoundException('Invalid Hinh Anh ID or Nguoi Dung ID');
     }
 
-    return result;
+    const isSaved = await this.hinhAnhService.isHinhAnhSavedByHinhId(
+      id,
+      nguoiDungId,
+    );
+
+    return { isSaved };
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('Jwt'))
+  @Get('/da-tao')
+  async getHinhAnhByUserId(@Req() req): Promise<any> {
+    const nguoiDungId = Number(req.user.nguoi_dung_id);
+
+    if (!nguoiDungId) {
+      throw new NotFoundException('Invalid Nguoi Dung ID');
+    }
+
+    const hinhAnhList =
+      await this.hinhAnhService.getHinhAnhByUserId(nguoiDungId);
+
+    return hinhAnhList;
+  }
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('Jwt'))
+  @Get('/da-luu')
+  async getHinhAnhDaLuu(@Req() req): Promise<any> {
+    const nguoiDungId = Number(req.user.nguoi_dung_id);
+
+    if (!nguoiDungId) {
+      throw new NotFoundException('Invalid Nguoi Dung ID');
+    }
+
+    const hinhAnhList =
+      await this.hinhAnhService.getHinhAnhDaLuuByUser(nguoiDungId);
+
+    return hinhAnhList;
+  }
+  @Get(':id')
+  async findHinhAnhAndNguoiDungById(@Param('id') hinhAnhId: number) {
+    try {
+      const result = await this.hinhAnhService.findHinhAnhAndNguoiDungById(
+        Number(hinhAnhId),
+      );
+      return result;
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   @ApiQuery({
@@ -37,7 +88,7 @@ export class HinhAnhController {
     required: false,
   })
   @Get()
-  async findOneByName(@Query('tenHinh') tenHinh?: string) {
+  async findByNameOrFindAll(@Query('tenHinh') tenHinh?: string) {
     if (tenHinh) {
       const hinhAnhList = await this.hinhAnhService.findByName(tenHinh);
       return hinhAnhList;
