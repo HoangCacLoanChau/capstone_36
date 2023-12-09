@@ -1,22 +1,17 @@
 import {
   Controller,
   Get,
-  Post,
   Body,
-  Patch,
-  Param,
-  Delete,
-  UseInterceptors,
-  UploadedFiles,
   Req,
   UseGuards,
+  Put,
+  NotFoundException,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { ConfigService } from '@nestjs/config/dist';
-import { FilesInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @ApiTags('Nguoi dung')
 @Controller('users')
@@ -54,6 +49,26 @@ export class UsersController {
   @ApiBearerAuth()
   findOne(@Req() req) {
     return this.usersService.findOne(req.user.nguoi_dung_id);
+  }
+
+  @UseGuards(AuthGuard('Jwt'))
+  @ApiBearerAuth()
+  @Put()
+  async updateUserInfo(@Req() req, @Body() updateUserDto: UpdateUserDto) {
+    try {
+      const updatedUser = await this.usersService.updateUserInfo(
+        req.user.nguoi_dung_id,
+        updateUserDto,
+      );
+      return updatedUser;
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw new NotFoundException(
+          `User with ID ${req.user.nguoi_dung_id} not found`,
+        );
+      }
+      throw error;
+    }
   }
 
   // @Patch(':id')
