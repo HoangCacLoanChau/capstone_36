@@ -4,6 +4,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
+import { CreateHinhAnhDto } from './dto/create-hinh-anh.dto';
 
 @Injectable()
 export class HinhAnhService {
@@ -93,5 +94,16 @@ export class HinhAnhService {
       where: { nguoi_dung_id: nguoiDungId },
     });
     return hinhanhList;
+  }
+
+  async createHinhAnh(
+    createHinhAnhDto: CreateHinhAnhDto,
+    nguoiDungId: number,
+  ): Promise<any> {
+    const newHinhAnh = await this.prisma.hinh_anh.create({
+      data: { ...createHinhAnhDto, nguoi_dung_id: nguoiDungId },
+    });
+
+    return newHinhAnh;
   }
 }

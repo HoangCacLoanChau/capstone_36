@@ -7,16 +7,31 @@ import {
   NotFoundException,
   Req,
   UseGuards,
+  Post,
+  Body,
 } from '@nestjs/common';
 import { HinhAnhService } from './hinh-anh.service';
 import { ApiBearerAuth, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
+import { CreateHinhAnhDto } from './dto/create-hinh-anh.dto';
 
 @ApiTags('Hinh Anh')
 @Controller('hinh-anh')
 export class HinhAnhController {
   constructor(private readonly hinhAnhService: HinhAnhService) {}
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('Jwt'))
+  @Post()
+  async createHinhAnh(
+    @Req() req,
+    @Body() createhinhAnh: CreateHinhAnhDto,
+  ): Promise<any> {
+    return this.hinhAnhService.createHinhAnh(
+      createhinhAnh,
+      req.user.nguoi_dung_id,
+    );
+  }
   @ApiBearerAuth()
   @UseGuards(AuthGuard('Jwt'))
   @Get(':id/is-saved/')
